@@ -8,7 +8,15 @@ def invite_to_times():
     """invite all users to all 'times_XXX' channels"""
 
     if TOKEN:
-        sc = SlackClient(TOKEN)
+        if "HTTP_PROXY" in os.environ and "HTTPS_PROXY" in os.environ:
+            http = os.environ["HTTP_PROXY"]
+            https = os.environ["HTTPS_PROXY"]
+            proxy = {"http": http, "https": https}
+            print("setting http proxy : " + http)
+            print("setting https proxy : " + https)
+            sc = SlackClient(TOKEN, proxy)
+        else:
+            sc = SlackClient(TOKEN)
 
         # get users
         users = sc.api_call("users.list")
